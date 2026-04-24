@@ -1,0 +1,81 @@
+.field-panel {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.field-panel.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+}
+
+.field-panel.empty .hint {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.panel-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.hint {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 12px;
+}
+
+.field-group {
+  margin-bottom: 16px;
+}
+
+.group-label {
+  margin-bottom: 8px;
+}
+
+.field-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #fafafa;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  cursor: grab;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.field-item:hover {
+  background: #f0f7ff;
+  border-color: #1890ff;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15);
+}
+
+.field-item.dragging {
+  background: #e6f7ff;
+  border-color: #1890ff;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.25);
+}
+
+.field-name {
+  font-size: 13px;
+  color: #333;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.field-type-tag {
+  font-size: 11px;
+  margin-left: 8px;
+}

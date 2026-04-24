@@ -1,0 +1,88 @@
+.drop-zone {
+  background: #fafafa;
+  border: 2px dashed #d9d9d9;
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 80px;
+  transition: all 0.2s;
+}
+
+.drop-zone.over {
+  border-color: #1890ff;
+  background: #e6f7ff;
+}
+
+.drop-zone.has-items {
+  border-style: solid;
+  border-color: #e8e8e8;
+}
+
+.drop-zone-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.drop-zone-placeholder {
+  color: #bbb;
+  font-size: 13px;
+  text-align: center;
+  padding: 16px;
+}
+
+.drop-zone-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.drop-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 13px;
+}
+
+.drop-item.with-agg {
+  padding: 1px 4px 1px 6px;
+}
+
+.drop-item-label {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drop-item-agg {
+  min-width: 60px;
+}
+
+.drop-item-agg .ant-select-selector {
+  padding: 0 4px !important;
+  font-size: 12px !important;
+  color: #1890ff !important;
+}
+
+.drop-item-agg .ant-select-selection-item {
+  padding-inline-end: 12px !important;
+}
+
+.drop-item-agg .ant-select-arrow {
+  right: 2px;
+  font-size: 10px;
+}
+
+.drop-item-remove {
+  color: #999;
+  padding: 0 2px;
+}
+
+.drop-item-remove:hover {
+  color: #ff4d4f;
+}

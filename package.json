@@ -1,0 +1,90 @@
+{
+  "name": "sales-dashboard",
+  "productName": "销售数据看板",
+  "private": true,
+  "version": "1.0.0",
+  "description": "销售数据看板 - 支持多维度分析、图表可视化、企业微信推送",
+  "author": "主控",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "electron:dev": "electron .",
+    "electron:build": "electron-builder",
+    "electron:build:win": "electron-builder --win",
+    "electron:build:mac": "electron-builder --mac",
+    "electron:build:all": "electron-builder --win --mac"
+  },
+  "build": {
+    "appId": "com.tencent.sales-dashboard",
+    "productName": "销售数据看板",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "web-dist/**/*",
+      "electron/**/*",
+      "run_dashboard.py"
+    ],
+    "asarUnpack": [
+      "web-dist/**/*",
+      "run_dashboard.py"
+    ],
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] }
+      ],
+      "artifactName": "${productName}-${version}-Windows.${ext}"
+    },
+    "mac": {
+      "target": [
+        { "target": "dmg", "arch": ["x64", "arm64"] }
+      ],
+      "artifactName": "${productName}-${version}-macOS.${ext}",
+      "category": "public.app-category.business"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "dmg": {
+      "title": "${productName}",
+      "contents": [
+        { "x": 130, "y": 220 },
+        { "x": 410, "y": 220, "type": "link", "path": "/Applications" }
+      ]
+    }
+  },
+  "dependencies": {
+    "@ant-design/charts": "^2.6.7",
+    "@ant-design/icons": "^6.1.1",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-opener": "^2",
+    "antd": "^6.3.6",
+    "crypto-js": "^4.2.0",
+    "dayjs": "^1.11.20",
+    "echarts": "^6.0.0",
+    "react": "^19.1.0",
+    "react-antd-column-resize": "^1.0.3",
+    "react-dom": "^19.1.0",
+    "xlsx": "^0.18.5",
+    "zustand": "^5.0.12"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "electron": "^41.3.0",
+    "electron-builder": "^26.8.1",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4"
+  }
+}

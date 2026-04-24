@@ -1,0 +1,230 @@
+.pivot-table-view {
+  width: 100%;
+  height: 100%;
+}
+
+.pivot-table-view.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #999;
+  min-height: 200px;
+}
+
+.pivot-table-view.empty p:first-child {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.pivot-table-view.empty .hint {
+  font-size: 13px;
+  color: #bbb;
+}
+
+/* === 卡片容器 === */
+.pivot-table-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f0f0f0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* === 工具栏：维度标签 + 导出按钮 === */
+.pivot-table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  flex-shrink: 0;
+  gap: 12px;
+}
+
+.pivot-table-dimensions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pivot-table-dimensions .dim-label {
+  font-size: 12px;
+  color: #999;
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+.pivot-table-dimensions .dim-sep {
+  color: #ccc;
+  font-size: 12px;
+  margin: 0 2px;
+}
+
+.pivot-table-toolbar .export-btn {
+  flex-shrink: 0;
+}
+
+/* === 表格主体 === */
+.pivot-table-body {
+  flex: 1;
+  overflow: hidden;
+}
+
+.pivot-table-body .ant-table {
+  font-size: 13px;
+}
+
+/* 表头：极简风格，无深色背景 */
+.pivot-table-body .ant-table-thead > tr > th {
+  background: #fff !important;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+  text-align: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e8e8e8;
+  border-top: none;
+  font-size: 13px;
+}
+
+/* 去掉左右边框 */
+.pivot-table-body .ant-table-thead > tr > th:first-child {
+  border-left: none;
+}
+
+.pivot-table-body .ant-table-thead > tr > th:last-child {
+  border-right: none;
+}
+
+/* 行维度列头左对齐 */
+.pivot-table-body .ant-table-thead > tr > th:first-child {
+  text-align: left;
+}
+
+/* 数据单元格 */
+.pivot-table-body .ant-table-tbody > tr > td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #f5f5f5;
+  border-left: none;
+  border-right: none;
+  color: #333;
+}
+
+/* 行维度单元格左对齐 */
+.pivot-table-body .ant-table-tbody > tr > td:first-child {
+  text-align: left;
+  color: #555;
+}
+
+/* 数值单元格右对齐 */
+.pivot-table-body .ant-table-tbody > tr > td:not(:first-child) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 列宽拖拽手柄样式 */
+.pivot-table-body .react-resizable-handle {
+  position: absolute;
+  right: -5px;
+  bottom: 0;
+  z-index: 1;
+  width: 10px;
+  height: 100%;
+  cursor: col-resize;
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.pivot-table-body .react-resizable-handle:hover {
+  background: rgba(74, 125, 255, 0.3);
+}
+
+.pivot-table-body .react-resizable-handle::after {
+  content: '';
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 16px;
+  background: #d9d9d9;
+  border-radius: 1px;
+}
+
+.pivot-table-body .react-resizable-handle:hover::after {
+  background: #4a7dff;
+}
+
+/* hover：极淡的蓝色 */
+.pivot-table-body .ant-table-tbody > tr:hover > td {
+  background: #f6f9ff;
+}
+
+/* 斑马纹 */
+.pivot-table-body .ant-table-tbody > tr:nth-child(even) > td {
+  background: #fafbfc;
+}
+
+.pivot-table-body .ant-table-tbody > tr:nth-child(even):hover > td {
+  background: #f0f4ff;
+}
+
+/* 合计行 */
+.pivot-table-body .total-row {
+  background: #fff9f0 !important;
+}
+
+.pivot-table-body .total-row td {
+  border-top: 2px solid #ffd591;
+  border-bottom: none;
+  font-weight: 600;
+  color: #d46b08;
+}
+
+.pivot-table-body .total-row:hover td {
+  background: #fff5e6 !important;
+}
+
+/* 负值红色 */
+.pivot-table-body .negative-value {
+  color: #cf1322;
+}
+
+/* 固定列阴影 */
+.pivot-table-body .ant-table-cell-fix-left,
+.pivot-table-body .ant-table-cell-fix-right {
+  background: #fff;
+}
+
+.pivot-table-body .ant-table-cell-fix-left::after,
+.pivot-table-body .ant-table-cell-fix-right::after {
+  box-shadow: inset 8px 0 8px -8px rgba(0, 0, 0, 0.06);
+}
+
+/* 去掉 ant-table 默认的边框 */
+.pivot-table-body .ant-table-bordered .ant-table-container {
+  border: none;
+}
+
+.pivot-table-body .ant-table-bordered .ant-table-cell {
+  border-right: none !important;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .pivot-table-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .pivot-table-body {
+    overflow-x: auto;
+  }
+}
