@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>销售数据看板</title>
+<!-- SheetJS: 解析Excel -->
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #1e3c72 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 900px;
+  }
+
+  .card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+
+  h1 {
+    text-align: center;
+    color: #1a1a2e;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .upload-zone {
+    border: 2px dashed #667eea;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 20px;
+  }
+
+  .upload-zone:hover {
+    border-color: #764ba2;
+    background: rgba(102, 126, 234, 0.05);
+  }
+
+  .upload-zone input {
+    display: none;
+  }
+
+  .upload-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+
+  .upload-text {
+    color: #666;
+    font-size: 14px;
+  }
+
+  .upload-text strong {
+    color: #667eea;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .btn {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+  }
+
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .btn-secondary {
+    background: #f0f0f0;
+    color: #666;
+  }
+
+  .btn-secondary:hover { background: #e0e0e0; }
+
+  /* 预览表格 */
+  .preview-wrapper {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid #eee;
+  }
+
+  .preview-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .preview-table th {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 500;
+  }
+
+  .preview-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+  }
+
+  .preview-table tr:nth-child(even) td {
+    background: #f8f9ff;
+  }
+
+  .preview-table tr:hover td {
+    background: #f0f2ff;
+  }
+
+  /* 数字右对齐，加颜色 */
+  .preview-table td.num {
+    text-align: right;
+    font-family: "SF Mono", "Consolas", monospace;
+  }
+
+  .preview-table td.positive { color: #e74c3c; font-weight: 500; }
+  .preview-table td.negative { color: #27ae60; font-weight: 500; }
+
+  .file-info {
+    background: #f8f9ff;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: #666;
+  }
+
+  .file-info strong { color: #667eea; }
+
+  .status {
+    text-align: center;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-top: 16px;
+    display: none;
+  }
+
+  .status.success {
+    background: #d4edda;
+    color: #155724;
+    display: block;
+  }
+
+  .status.error {
+    background: #f8d7da;
+    color: #721c24;
+    display: block;
+  }
+
+  .status.loading {
+    background: #fff3cd;
+    color: #856404;
+    display: block;
+  }
+
+  .sheet-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .sheet-tab {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    background: #f0f0f0;
+    color: #666;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .sheet-tab:hover { background: #e0e0e0; }
+  .sheet-tab.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+  }
+
+  .footer {
+    text-align: center;
+    color: rgba(255,255,255,0.7);
+    font-size: 12px;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <h1>📊 销售数据看板</h1>
+
+    <div class="upload-zone" id="uploadZone">
+      <div class="upload-icon">📁</div>
+      <div class="upload-text">
+        点击选择 Excel 文件，或将文件拖拽到此处<br>
+        <strong>支持 .xlsx / .xls 格式，数据不上传，仅在本地处理</strong>
+      </div>
+      <input type="file" id="fileInput" accept=".xlsx,.xls">
+    </div>
+
+    <div id="fileInfo" class="file-info" style="display:none;">
+      📄 <strong id="fileName"></strong> — 共 <strong id="sheetCount"></strong> 个工作表
+    </div>
+
+    <div id="sheetTabs" class="sheet-tabs"></div>
+
+    <div class="preview-wrapper" id="previewWrapper" style="display:none;">
+      <div id="previewContent"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="clearBtn" style="display:none;">清空</button>
+      <button class="btn btn-primary" id="pushBtn" disabled>🚀 推送到企业微信群</button>
+    </div>
+
+    <div id="status" class="status"></div>
+  </div>
+</div>
+
+<script>
+// ============ 全局状态 ============
+let workbook = null;
+let currentSheet = null;
+let currentHtml = null;
+
+// ============ DOM 元素 ============
+const uploadZone = document.getElementById('uploadZone');
+const fileInput = document.getElementById('fileInput');
+const fileInfo = document.getElementById('fileInfo');
+const fileName = document.getElementById('fileName');
+const sheetCount = document.getElementById('sheetCount');
+const sheetTabs = document.getElementById('sheetTabs');
+const previewWrapper = document.getElementById('previewWrapper');
+const previewContent = document.getElementById('previewContent');
+const clearBtn = document.getElementById('clearBtn');
+const pushBtn = document.getElementById('pushBtn');
+const statusDiv = document.getElementById('status');
+
+// ============ 文件上传处理 ============
+uploadZone.addEventListener('click', () => fileInput.click());
+
+uploadZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadZone.style.borderColor = '#764ba2';
+});
+
+uploadZone.addEventListener('dragleave', () => {
+  uploadZone.style.borderColor = '#667eea';
+});
+
+uploadZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadZone.style.borderColor = '#667eea';
+  const file = e.dataTransfer.files[0];
+  if (file) handleFile(file);
+});
+
+fileInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (file) handleFile(file);
+});
+
+// ============ 核心函数 ============
+
+function handleFile(file) {
+  showStatus('正在解析 Excel...', 'loading');
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      workbook = XLSX.read(e.target.result, { type: 'array' });
+      currentSheet = workbook.SheetNames[0];
+
+      // 更新文件信息
+      fileName.textContent = file.name;
+      sheetCount.textContent = workbook.SheetNames.length;
+      fileInfo.style.display = 'block';
+
+      // 生成Sheet标签
+      renderSheetTabs();
+
+      // 渲染第一个Sheet
+      renderSheet(currentSheet);
+
+      // 显示按钮
+      clearBtn.style.display = 'block';
+      pushBtn.disabled = false;
+
+      showStatus('解析完成！', 'success');
+
+    } catch (err) {
+      showStatus('解析失败: ' + err.message, 'error');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function renderSheetTabs() {
+  sheetTabs.innerHTML = '';
+  workbook.SheetNames.forEach(name => {
+    const btn = document.createElement('button');
+    btn.className = 'sheet-tab' + (name === currentSheet ? ' active' : '');
+    btn.textContent = name;
+    btn.onclick = () => {
+      document.querySelectorAll('.sheet-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentSheet = name;
+      renderSheet(name);
+    };
+    sheetTabs.appendChild(btn);
+  });
+}
+
+function renderSheet(sheetName) {
+  const sheet = workbook.Sheets[sheetName];
+
+  // 转成HTML表格，带样式
+  const html = XLSX.utils.sheet_to_html(sheet, {
+    id: 'dataTable',
+    display: 'block',
+    editable: false
+  });
+
+  // 注入样式
+  const styledHtml = `
+    <style>
+      #dataTable { border-collapse: collapse; width: 100%; font-size: 13px; }
+      #dataTable th {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 10px 12px;
+        text-align: left;
+        font-weight: 500;
+      }
+      #dataTable td {
+        padding: 8px 12px;
+        border-bottom: 1px solid #eee;
+        color: #333;
+      }
+      #dataTable tr:nth-child(even) td { background: #f8f9ff; }
+      #dataTable tr:hover td { background: #f0f2ff; }
+      #dataTable td, #dataTable th { border: 1px solid #e0e0e0; }
+    </style>
+    ${html}
+  `;
+
+  currentHtml = styledHtml;
+  previewContent.innerHTML = styledHtml;
+  previewWrapper.style.display = 'block';
+}
+
+// 清空
+clearBtn.onclick = () => {
+  workbook = null;
+  currentSheet = null;
+  currentHtml = null;
+  fileInput.value = '';
+  fileInfo.style.display = 'none';
+  sheetTabs.innerHTML = '';
+  previewWrapper.style.display = 'none';
+  clearBtn.style.display = 'none';
+  pushBtn.disabled = true;
+  statusDiv.className = 'status';
+  statusDiv.style.display = 'none';
+};
+
+// 推送
+pushBtn.onclick = async () => {
+  if (!currentHtml) {
+    showStatus('请先选择 Excel 文件', 'error');
+    return;
+  }
+
+  showStatus('正在截图并推送...', 'loading');
+  pushBtn.disabled = true;
+
+  try {
+    const resp = await fetch('/api/push', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        html: currentHtml,
+        message: '📊 销售数据看板'
+      })
+    });
+
+    const result = await resp.json();
+
+    if (result.success) {
+      showStatus('✅ 推送成功！企业微信群已收到数据截图', 'success');
+    } else {
+      showStatus('❌ 推送失败: ' + (result.error || '未知错误'), 'error');
+    }
+  } catch (err) {
+    showStatus('❌ 网络错误: ' + err.message, 'error');
+  } finally {
+    pushBtn.disabled = false;
+  }
+};
+
+function showStatus(msg, type) {
+  statusDiv.textContent = msg;
+  statusDiv.className = 'status ' + type;
+  statusDiv.style.display = 'block';
+}
+</script>
+</body>
+</html>
