@@ -40,10 +40,11 @@
     },
     "mac": {
       "target": [
-        { "target": "dmg", "arch": ["x64", "arm64"] }
+        { "target": "dmg", "arch": ["x64"] }
       ],
       "artifactName": "${productName}-${version}-macOS.${ext}",
-      "category": "public.app-category.business"
+      "category": "public.app-category.business",
+      "sign": false
     },
     "nsis": {
       "oneClick": false,
