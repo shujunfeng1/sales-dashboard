@@ -33,17 +33,8 @@ jobs:
         run: npm ci
 
       - name: Build React frontend
-        run: npm run build
-
-      - name: Build ${{ matrix.artifact }} installer
-        run: |
-          if [[ "${{ matrix.platform }}" == "mac" ]]; then
-            npx electron-builder --${{ matrix.platform }} --x64 \
-              --config.mac.certificateFile="" \
-              --config.mac.identity=null
-          else
-            npx electron-builder --${{ matrix.platform }} --x64
-          fi
+        run: npm run build      - name: Build ${{ matrix.artifact }} installer
+        run: npx electron-builder --${{ matrix.platform }} --x64
 
       - name: Upload ${{ matrix.artifact }} artifact
         uses: actions/upload-artifact@v4
@@ -63,11 +54,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: Windows-installer
-          path: win      - name: Download macOS
+          path: win
+
+      - name: Download macOS
         uses: actions/download-artifact@v4
         with:
-          name: macOS-installer
-          path: mac
+          name: macOS-installer          path: mac
 
       - name: Upload to Release
         uses: softprops/action-gh-release@v1
