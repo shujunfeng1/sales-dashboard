@@ -24,12 +24,12 @@
       "output": "release"
     },
     "files": [
-      "web-dist/**/*",
+      "dist/**/*",
       "electron/**/*",
       "run_dashboard.py"
     ],
     "asarUnpack": [
-      "web-dist/**/*",
+      "dist/**/*",
       "run_dashboard.py"
     ],
     "win": {
